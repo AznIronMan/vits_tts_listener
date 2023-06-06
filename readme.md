@@ -76,6 +76,12 @@ curl -X POST -H "Content-Type: application/json" -H "Authorization: API_KEY" -d 
 
 **Note:** The voice "*samantha*" is currently the only voice with this package. *More will be added soon.*
 
+## Trainer Jupyter Notebook
+
+The **tts_vits_trainer.ipynb** is included.  It is not 100% perfect.  I am still trying to improve it, but it was the flow I used to train the *samantha* model.  Feel free to use it, copy it, etc.
+
+**Note:** It can be used on *Google Colabs* with some minor tweaks like editing the "home" location to the */content/drive/MyDrive* as well as adding the mount of the Google Drive to your notebook.
+
 ## Disclaimer
 
 This is meant for private use as Flask is not for production. Feel free to fork and modify. Enjoy!
