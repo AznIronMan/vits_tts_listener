@@ -164,5 +164,8 @@ cython_debug/
 output_wavs/
 TTS/
 .env
-start.bat
 models
+*.bat
+*.sh
+
+references/

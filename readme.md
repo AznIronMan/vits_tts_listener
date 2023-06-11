@@ -10,7 +10,7 @@ git remote add origin https://github.com/AznIronMan/vits_tts_listener.git
 
 Clone the repository:
 ```bash
-git clone https://github.com/AznIronMan/TTS_Listener
+git clone https://github.com/AznIronMan/vits_tts_listener
 ```
 
 We recommend using a virtual environment using `venv` or `conda` for this project. Python 3.8-3.10 works best.

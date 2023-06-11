@@ -10,25 +10,27 @@ def get_cuda():
     return torch.cuda.is_available()
 
 def get_model(config, model_path):
-    cuda = get_cuda();
+    from .vars import torch_device
+
     model = Vits.init_from_config(config)
-    cp = torch.load(model_path, map_location=torch.device('cuda'))
+    cp = torch.load(model_path, map_location=torch.device(torch_device))
     model.load_state_dict(cp['model'])
     model.eval()
     model.decoder_mode = False
-    device = torch.device('cuda' if cuda else 'cpu')
+    device = torch.device(torch_device)
     model = model.to(device)
     return model
 
-def get_timer(start, end, type): 
+def get_timer(start, end, type, others = []): 
     time = end - start
-    if type == "syn":
-        print(f"synthesis took {time} seconds")
-    elif type == "aud":
-        print(f"audio processing took {time} seconds")
+    if type == "syn" or type == "aud" or type == "phon":
+        return time
     elif type == "total":
-        time = start + end
-        print(f"total time was {time} seconds")
+        time = 0
+        for t in others:
+            time += t
+        time += (start + end)
+        return time
     else:
         print(f"{type} took {time} seconds")
     return time
