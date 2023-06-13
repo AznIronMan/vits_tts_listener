@@ -1,12 +1,13 @@
-import os, time, torch
+import os, re, time, torch
 
+from dotenv import load_dotenv
 from flask import Flask, request
 from waitress import serve
 
 def listen():
     from .checks import get_os, env_check, sub_check, models_check, cuda_check, api_check, batch_file_exists, get_wav_path
     from .configs import get_num_chars, vits_config, get_outputs_dict_config
-    from .envinfo import env_skip_pip, env_skip_batch, env_listen_port, env_listen_name, env_listen_host, env_listen_ipv6, env_listen_threads
+    from .envinfo import env_skip_pip, env_skip_batch, env_listen_port, env_listen_name, env_listen_host, env_listen_ipv6, env_listen_threads, env_accepted_urls
     from .gitclone import check_git
     from .procs import get_model, get_audio_processor, get_timer
     from .starter import batch_check, check_pip
@@ -35,10 +36,40 @@ def listen():
 
     app = Flask(__name__)
 
+    
     @app.route(web_tts_route, methods=[web_tts_route_method]) # /tts
     def synthesize():
 
+        load_dotenv()
+      
+        accepted_urls = env_accepted_urls
+        url_used = request.headers.get('Host')
+
+        allowed = False
+
+        if accepted_urls and len(accepted_urls) > 0:
+            for url in accepted_urls:
+                hostname = re.sub('[^a-zA-Z0-9.:]+', ' ', url).strip()
+                if (allowed == False):
+                    if hostname in url_used:
+                        allowed = True
+                    else:
+                        allowed = False
+                else:
+                    break
+        else:
+            allowed = True
+
+        if not allowed:
+            return f'Not Allowed! Unauthorized: {url_used}', 401
+
         api_check(request.headers.get(web_tts_auth_get))
+
+        # Check for X-Forwarded-For header
+        if request.headers.getlist("X-Forwarded-For"):
+            ip = request.headers.getlist("X-Forwarded-For")[0]
+        else:
+            ip = request.remote_addr
 
         # TODO : Make the api check more secure
 
@@ -68,9 +99,11 @@ def listen():
         ap = get_audio_processor(config)
 
         syn_start_time = time.time()
+
+        processed_text = f'{text},(),()'
         
         with torch.no_grad():
-            outputs_dict = get_outputs_dict_config(model, text, config)
+            outputs_dict = get_outputs_dict_config(model, processed_text, config)
         
         syn_end_time = time.time()
         
@@ -94,7 +127,7 @@ def listen():
         print(f"Synthesis Time: {syn_time} | Audio Time: {aud_time}")
         print(f"Total Time: {syn_time + aud_time}")
 
-        return audio_data, web_tts_route_response_code, {'Content-Type': web_tts_route_response_type}
+        return audio_data, web_tts_route_response_code, {'Content-Type': web_tts_route_response_type, 'X-Forwarded-For': ip}
 
     os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -113,3 +146,4 @@ def listen():
             threads=tts_threads)
 
     return app
+

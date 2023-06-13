@@ -14,5 +14,8 @@ env_listen_name: str = str(os.getenv('LISTENING_NAME', 'vits_tts_listener'))
 env_listen_ipv6: bool = os.getenv('LISTENING_IPV6', 'False').lower() == 'true'
 env_listen_threads: int = int(os.getenv('LISTENING_THREADS', '4'))
 env_venv_name: str = str(os.getenv('VENV_NAME', 'venv'))
+env_accepted_urls_str = os.getenv('ACCEPTED_URLS')
+env_accepted_urls = env_accepted_urls_str.split(',') if env_accepted_urls_str else []
+
 
 env_custom_models = os.getenv('CUSTOM_MODELS', None)
