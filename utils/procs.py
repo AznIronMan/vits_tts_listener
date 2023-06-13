@@ -1,7 +1,7 @@
 import torch
 
-from TTS.utils.audio import AudioProcessor
-from TTS.tts.models.vits import Vits
+from TTS.TTS.utils.audio import AudioProcessor
+from TTS.TTS.tts.models.vits import Vits
 
 def get_audio_processor(config):
     return AudioProcessor.init_from_config(config)

@@ -97,13 +97,19 @@ def listen():
         return audio_data, web_tts_route_response_code, {'Content-Type': web_tts_route_response_type}
 
     os.system('cls' if os.name == 'nt' else 'clear')
+
     tts_server_name = env_listen_name
     tts_host = env_listen_host
     tts_port = env_listen_port
     tts_ipv6 = env_listen_ipv6
     tts_threads = env_listen_threads
+
     print(f"Starting {tts_server_name} on {tts_host}:{tts_port}...")
-    print(f"Listening...")
-    serve(app, host=tts_host, port=tts_port, ipv6=tts_ipv6, ident=tts_server_name.lower(), threads=tts_threads)
+    serve(app, 
+            host=tts_host, 
+            port=tts_port, 
+            ipv6=tts_ipv6, 
+            ident=tts_server_name.lower(), 
+            threads=tts_threads)
 
     return app

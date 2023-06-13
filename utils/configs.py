@@ -1,8 +1,8 @@
-from TTS.config import load_config
-from TTS.config.shared_configs import BaseDatasetConfig
-from TTS.tts.configs.vits_config import VitsConfig
-from TTS.tts.models.vits import VitsAudioConfig
-from TTS.tts.utils.synthesis import synthesis
+from TTS.TTS.config import load_config
+from TTS.TTS.config.shared_configs import BaseDatasetConfig
+from TTS.TTS.tts.configs.vits_config import VitsConfig
+from TTS.TTS.tts.models.vits import VitsAudioConfig
+from TTS.TTS.tts.utils.synthesis import synthesis
 
 def dataset_config(meta_file_name, output_path):
     from .vars import formatter_name
